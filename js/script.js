@@ -24,7 +24,6 @@ function showPage(studentList, pageNumber) {
   for (index; index < stopNumber ; index += 1) {
     studentList[index].style.display = "inherit";
   }
-
   activateButton(studentList, pageNumber);
 }
 
@@ -43,19 +42,20 @@ function activateButton(studentList, buttonNumber) {
   }
 }
 
-function appendPageLinks(studentListHTML) {
+function appendPageLinks(studentList) {
   if (document.querySelector(".pagination") !== null) {
     let node = document.querySelector(".pagination");
     pageDiv.removeChild(node);
   }
+
   const pagination = document.createElement("div");
   pagination.className = "pagination";
-  pageDiv.appendChild(pagination);
-
   const ul = document.createElement("ul");
+
+  pageDiv.appendChild(pagination);
   pagination.appendChild(ul);
 
-  for (let i = 0 ; i < getNumberOfPages(studentListHTML) ; i += 1) {
+  for (let i = 0 ; i < getNumberOfPages(studentList) ; i += 1) {
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.textContent = i + 1;
@@ -65,7 +65,7 @@ function appendPageLinks(studentListHTML) {
   }
 
   pagination.addEventListener("click", function(e) {
-    showPage(studentListHTML, e.target.textContent);
+    showPage(studentList, e.target.textContent);
   });
 }
 
@@ -78,34 +78,33 @@ function appendPageSearchBar() {
   button.textContent = "Search";
 
   const pageHeader = document.querySelector(".page-header");
-
   pageHeader.appendChild(div);
   div.appendChild(input);
   div.appendChild(button);
 
-  div.addEventListener('keyup', function(event){
-    showResult(event.target.value)
+  button.addEventListener("click", function() {
+    showResult(input.value);
+  });
+  input.addEventListener('keyup', function(event){
+    showResult(event.target.value);
   });
 
   const p = document.createElement("p");
-  p.textContent = "No hay resultados";
+  p.textContent = "Sorry, no results found.";
   p.className = "no-result"
   pageDiv.appendChild(p);
   p.style.display = "none";
 }
 
 function showResult(inputString) {
-  let noResults = document.querySelector(".no-result");
-  let students = getStudentArray(studentListHTML);
+  const students = getStudentArray(studentListHTML);
   let filteredStudents = [];
   for (var i = 0; i < students.length; i+= 1) {
-    if ((students[i].name.includes(inputString)) ||
-        (students[i].email.includes(inputString)) ||
-        (students[i].date.includes(inputString))) {
+    if (students[i].name.includes(inputString) || students[i].email.includes(inputString)) {
       filteredStudents.push(studentListHTML[i]);
     }
   }
-
+  const noResults = document.querySelector(".no-result");
   if (filteredStudents.length > 0 ) {
     appendPageLinks(filteredStudents);
     showPage(filteredStudents, 1);
@@ -130,6 +129,6 @@ function getStudentArray(studentListHTML) {
   return students;
 }
 
-appendPageLinks(studentListHTML);
 appendPageSearchBar();
+appendPageLinks(studentListHTML);
 showPage(studentListHTML, 1);
