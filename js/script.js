@@ -81,8 +81,7 @@ function activateButton(studentList, buttonNumber) {
   }
 }
 
-// When a new set of students is shown, this method appends the right number of
-// buttons to the page and shows the requested students
+// This method appends the right number of buttons to the page and shows the requested students
 function createPage(studentList) {
   appendPageLinks(studentList);
   showPage(studentList, firstPage);
